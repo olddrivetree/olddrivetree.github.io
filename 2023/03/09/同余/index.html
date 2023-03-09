@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"olddrivetree.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="定义：若 $ a,b $ 为两个整数，满足 $ a \bmod m &#x3D; b   \bmod m $ 或 $ (a-b) | m $ 则称 $ a $ 和 $ b $ 关于模 $ m $ 同余，记为 $ a \equiv b \pmod{m}$ 。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="同余">
+<meta property="og:url" content="https://olddrivetree.github.io/2023/03/09/%E5%90%8C%E4%BD%99/index.html">
+<meta property="og:site_name" content="ODT&#39;s Blog">
+<meta property="og:description" content="定义：若 $ a,b $ 为两个整数，满足 $ a \bmod m &#x3D; b   \bmod m $ 或 $ (a-b) | m $ 则称 $ a $ 和 $ b $ 关于模 $ m $ 同余，记为 $ a \equiv b \pmod{m}$ 。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-03-09T04:29:33.000Z">
+<meta property="article:modified_time" content="2023-03-09T04:47:45.874Z">
+<meta property="article:author" content="珂朵莉·诺塔·瑟尼欧里斯">
+<meta property="article:tag" content="GCD">
+<meta property="article:tag" content="同余">
+<meta property="article:tag" content="Exgcd">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://olddrivetree.github.io/2023/03/09/%E5%90%8C%E4%BD%99/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>同余 | ODT's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">ODT's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一只可爱的OIer!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://olddrivetree.github.io/2023/03/09/%E5%90%8C%E4%BD%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/740607.png">
+      <meta itemprop="name" content="珂朵莉·诺塔·瑟尼欧里斯">
+      <meta itemprop="description" content="热爱算法的蒟蒻">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ODT's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          同余
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-03-09 12:29:33 / 修改时间：12:47:45" itemprop="dateCreated datePublished" datetime="2023-03-09T12:29:33+08:00">2023-03-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">数论</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="定义："><a href="#定义：" class="headerlink" title="定义："></a>定义：</h1><p>若 $ a,b $ 为两个整数，满足 $ a \bmod m = b   \bmod m $ 或 $ (a-b) | m $ 则称 $ a $ 和 $ b $ 关于模 $ m $ 同余，记为 $ a \equiv b \pmod{m}$ 。</p>
+<span id="more"></span>
+<h1 id="性质："><a href="#性质：" class="headerlink" title="性质："></a>性质：</h1><ol>
+<li><p>$ a \equiv a \pmod{m} $</p>
+</li>
+<li><p>若 $ a \equiv b \pmod{m} $ ， 则 $ b \equiv a \pmod{m} $ 。</p>
+</li>
+<li><p>若 $ a \equiv b \pmod{m} \text{  ,  } b \equiv a \pmod{m}  $ 。</p>
+</li>
+<li><p>若 $ a \equiv b \pmod{m} $ ， 则 $ a+c \equiv b+c \pmod{m} $ 。</p>
+</li>
+<li><p>若 $ a \equiv b \pmod{m} $ ， 则 $ a \times c \equiv b \times c \pmod{m} $ 。</p>
+</li>
+<li><p>$ a\times b   \bmod k = (a \bmod k \times b \bmod k) \bmod k $ 。</p>
+</li>
+<li><p>$ (a+ b)   \bmod k = (a \bmod k + b \bmod k) \bmod k $ 。</p>
+</li>
+<li><p>若 $ a \equiv b \pmod{m} $ ， 则 $ a^n \equiv b^n \pmod{m} $ 。</p>
+</li>
+<li><p>若 $ a \equiv b \pmod{m} \text{  ,  }  c \equiv d \pmod{m} $ ， 则 $ a \times c \equiv b \times d \pmod{m} $ 。</p>
+</li>
+</ol>
+<p>证明：<br>有：</p>
+<script type="math/tex; mode=display">a \times c \bmod m =(a \bmod m \times c \bmod m) \bmod m</script><script type="math/tex; mode=display">b \times d \bmod m =(b \bmod m \times d \bmod m) \bmod m</script><script type="math/tex; mode=display">a \bmod m = b \bmod m \text{  ,  } c \bmod m = d \bmod m</script><p>则：</p>
+<script type="math/tex; mode=display">a \times c \bmod m = b \times d \bmod m</script><p>所以：</p>
+<script type="math/tex; mode=display">a \times c \equiv b \times d \pmod{m}</script><ol>
+<li>若 $ a\times p \equiv x \pmod{m} \text{  ,  } a\times q \equiv x \pmod{m} $ ， $ p,q $ 互质 ， 则 $ a \bmod p \times q = x $ 。</li>
+</ol>
+<p>证明：</p>
+<p>有 $ s,t $ 使</p>
+<script type="math/tex; mode=display">a = s \times p + x \text{  ,  } a = t \times q + x</script><p>则：</p>
+<script type="math/tex; mode=display">s \times p = t \times q</script><p>因为 $ p,q $ 互质，所以 $ p|t \text{  ,  } q|s $ 。</p>
+<p>那么一定有 $ r $ 使</p>
+<script type="math/tex; mode=display">s = q \times r</script><p>则：</p>
+<script type="math/tex; mode=display">a = r \times p \times q + x</script><p>所以：</p>
+<script type="math/tex; mode=display">a \bmod p \times q = x</script><h1 id="前置芝士gcd"><a href="#前置芝士gcd" class="headerlink" title="前置芝士gcd"></a><a target="_blank" rel="noopener" href="https://www.cnblogs.com/dadidididi/p/16532621.html">前置芝士gcd</a></h1><h1 id="拓展欧几里得算法"><a href="#拓展欧几里得算法" class="headerlink" title="拓展欧几里得算法"></a>拓展欧几里得算法</h1><p>用途： 求 $ a \times x + b \times y = \gcd (a,b) $</p>
+<p>解法：</p>
+<p>有：</p>
+<script type="math/tex; mode=display">\gcd (a,b) = \gcd (b,a \bmod b)</script><script type="math/tex; mode=display">b \times x' + ( a \bmod b ) \times y' = \gcd (b,a \bmod b)</script><p>所以：</p>
+<script type="math/tex; mode=display">b \times x' + ( a \bmod b ) \times y' = a \times x + b \times y</script><p>因为 $ a \bmod b = a- \lfloor a/b \rfloor \times b $</p>
+<p>所以右式整理得：</p>
+<script type="math/tex; mode=display">b \times x' + ( a \bmod b ) \times y'</script><script type="math/tex; mode=display">= b \times x' + ( a- \lfloor a/b \rfloor \times b ) \times y'</script><script type="math/tex; mode=display">= a\times y' + b\times ( x' - \lfloor a/b \rfloor \times y')</script><p>所以</p>
+<script type="math/tex; mode=display">x=y' \text{  , } y= x' - \lfloor a/b \rfloor \times y'</script><p>就可以递归求解：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">exgcd</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b,<span class="type">int</span> &amp;x,<span class="type">int</span> &amp;y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(b==<span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		x=<span class="number">1</span>;y=<span class="number">0</span>;</span><br><span class="line">		<span class="keyword">return</span> a;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="type">int</span> gcd=<span class="built_in">exgcd</span>(b,a%b,x,y);</span><br><span class="line">	<span class="type">int</span> tmp=x;</span><br><span class="line">	x=y;</span><br><span class="line">	y=tmp-a/b*y;</span><br><span class="line">	<span class="keyword">return</span> gcd;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="定理1："><a href="#定理1：" class="headerlink" title="定理1："></a>定理1：</h1><p>若同余方程 $ a \times x + b \times y = c $ 有整数解，则有 $ \gcd(a,b) | c $</p>
+<h1 id="定理2："><a href="#定理2：" class="headerlink" title="定理2："></a>定理2：</h1><p>若 $ \gcd (a,b) = 1 $ 且 $ x_0 , y_0 $ 为 $ a \times x + b \times y = c $ 的一组解，那么方程的任意一组解为 $ x=x_0 + b \times t , y=y_0 - a \times t $</p>
+<h1 id="特解："><a href="#特解：" class="headerlink" title="特解："></a>特解：</h1><p>求 $ x $ 的最小正整数解，即 $ t = b / \gcd(a,b) \text{  ,  } x= ( x \bmod t + t ) \bmod t $</p>
+<h1 id="例题：青蛙的约会"><a href="#例题：青蛙的约会" class="headerlink" title="例题：青蛙的约会"></a>例题：青蛙的约会</h1><p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1516">题目传送门</a></p>
+<p><strong>思路</strong></p>
+<p>因为两个青蛙同时跳到同一个点上才算碰面，设 $ t $ 为跳的次数， $ p $ 为两个青蛙跳的圈数之差，有如下式子：</p>
+<script type="math/tex; mode=display">(x+m \times t ) - ( y+n \times t ) = p \times L</script><p>整理得：</p>
+<script type="math/tex; mode=display">(n-m) \times t + L \times p = x - y</script><p>首先，要判断 $ \gcd ( n-m , L ) \nmid x-y $ 的情况。</p>
+<p>然后，直接套拓展欧几里得算法，求出 $ (n-m) \times t + L \times p = \gcd ( n-m , L ) $ 一组解 $ t_0 \text{  ,  } p_0 \text{  ,  } gcd= \gcd ( n-m , L ) $ 。</p>
+<p>带入特解（本题求的是 $ t $ 的最小解），求出 $ (n-m) \times t + L \times p = \gcd ( n-m , L ) $ 中 $ t_0 $ 的最小解 $ t’ $</p>
+<script type="math/tex; mode=display">t'= ( t_0 \bmod \dfrac{L}{gcd} + \dfrac{L}{gcd} ) \bmod \dfrac{L}{gcd}</script><p>有</p>
+<script type="math/tex; mode=display">t = t' \times \dfrac{x - y}{gcd}</script><p>所以</p>
+<script type="math/tex; mode=display">t=(\dfrac{x - y}{gcd} \times t_0 \bmod \dfrac{L}{gcd} + \dfrac{L}{gcd} ) \bmod \dfrac{L}{gcd}</script><p><strong>$ Code $</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> int long long</span></span><br><span class="line"><span class="function"><span class="type">signed</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> x,y,m,n,l;</span><br><span class="line">	<span class="type">int</span> X,Y,gcd;</span><br><span class="line">	cin&gt;&gt;x&gt;&gt;y&gt;&gt;m&gt;&gt;n&gt;&gt;l;</span><br><span class="line">	<span class="type">int</span> A=x-y,B=n-m;</span><br><span class="line">	<span class="keyword">if</span>(B&lt;<span class="number">0</span>)<span class="comment">//注意取反！！！</span></span><br><span class="line">	&#123;</span><br><span class="line">		B=-B;</span><br><span class="line">		A=-A;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(A%(gcd=<span class="built_in">exgcd</span>(B,l,X,Y))!=<span class="number">0</span>)</span><br><span class="line">		cout&lt;&lt;<span class="string">&quot;Impossible&quot;</span>&lt;&lt;endl;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		cout&lt;&lt;(  A/gcd * X % (l/gcd) + (l/gcd)  ) % (l/gcd)&lt;&lt;endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="逆元"><a href="#逆元" class="headerlink" title="逆元"></a>逆元</h1><h2 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h2><p>用于求 $ a \times x \equiv 1 \pmod{b} $ （ $ a , b $ 互质） 的 $ x $ ， 称 $ x $ 为 $ a $ 的逆元，记为 $ a^{-1} $ 。</p>
+<p>可用拓展欧几里得算法计算。</p>
+<p>也可用费马定理计算。</p>
+<p>费马定理： 若 $ a,p $ 互质且 $ p $ 为素数， $ a^{p-1} \equiv 1 \pmod{p} $</p>
+<p>还可用递推计算。</p>
+<p>首先： </p>
+<script type="math/tex; mode=display">1^{-1} \equiv 1 \pmod{p}</script><p>设 $ p=k\times i +r , r&lt;i,1&lt;i&lt;p $</p>
+<p>有</p>
+<script type="math/tex; mode=display">k\times i+r \equiv 0 \pmod{p}</script><p>两边同乘上 $ i^{-1} $ , $ r^{-1} $ 。</p>
+<script type="math/tex; mode=display">k \times r^{-1} + i^{-1} \equiv 0 \pmod{p}</script><script type="math/tex; mode=display">i^{-1} \equiv -k \times r^{-1} \pmod{p}</script><script type="math/tex; mode=display">i^{-1} \equiv - \dfrac{p}{i} \times (p \bmod i)^{-1} \pmod{p}</script><h2 id="Code"><a href="#Code" class="headerlink" title="$ Code $"></a>$ Code $</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">long</span> <span class="type">long</span> <span class="title">exgcd_inv</span><span class="params">(<span class="type">long</span> <span class="type">long</span> a,<span class="type">long</span> <span class="type">long</span> mod)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">long</span> <span class="type">long</span> d,x,y;</span><br><span class="line">	d=<span class="built_in">exgcd</span>(a,n,x,y);</span><br><span class="line">	<span class="keyword">return</span> d==<span class="number">1</span>?(x+n)%n:<span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">long</span> <span class="type">long</span> <span class="title">fermat_inv</span><span class="params">(<span class="type">long</span> <span class="type">long</span> a,<span class="type">long</span> <span class="type">long</span> mod)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">pow_mod</span>(a,mod<span class="number">-2</span>,mod);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">inv[i]=-(p/i)*inv[p%i];</span><br></pre></td></tr></table></figure>
+<h1 id="威尔逊定理"><a href="#威尔逊定理" class="headerlink" title="威尔逊定理"></a>威尔逊定理</h1><p> 若 $ p $ 为素数，则 $ (p-1)! \equiv -1 \pmod{p} $ 。 若 $ (p-1)! \equiv -1 \pmod{p} $ 为素数，则 $ p $# </p>
+<h1 id="费马定理"><a href="#费马定理" class="headerlink" title="费马定理"></a>费马定理</h1><p> 若 $ a,p $ 互质且 $ p $ 为素数， $ a^{p-1} \equiv 1 \pmod{p} $</p>
+<h1 id="费马小定理"><a href="#费马小定理" class="headerlink" title="费马小定理"></a>费马小定理</h1><p> 若 $ p $ 为素数， $ a^{p} \equiv a \pmod{p} $</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/GCD/" rel="tag"># GCD</a>
+              <a href="/tags/%E5%90%8C%E4%BD%99/" rel="tag"># 同余</a>
+              <a href="/tags/Exgcd/" rel="tag"># Exgcd</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/03/09/GCD/" rel="prev" title="GCD">
+      <i class="fa fa-chevron-left"></i> GCD
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/03/09/%E6%95%B4%E9%99%A4/" rel="next" title="整除">
+      整除 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">定义：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%A7%E8%B4%A8%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">性质：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E8%8A%9D%E5%A3%ABgcd"><span class="nav-number">3.</span> <span class="nav-text">前置芝士gcd</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8B%93%E5%B1%95%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">拓展欧几里得算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E7%90%861%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">定理1：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E7%90%862%EF%BC%9A"><span class="nav-number">6.</span> <span class="nav-text">定理2：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%B9%E8%A7%A3%EF%BC%9A"><span class="nav-number">7.</span> <span class="nav-text">特解：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BE%8B%E9%A2%98%EF%BC%9A%E9%9D%92%E8%9B%99%E7%9A%84%E7%BA%A6%E4%BC%9A"><span class="nav-number">8.</span> <span class="nav-text">例题：青蛙的约会</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%86%E5%85%83"><span class="nav-number">9.</span> <span class="nav-text">逆元</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E6%83%B3"><span class="nav-number">9.1.</span> <span class="nav-text">思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Code"><span class="nav-number">9.2.</span> <span class="nav-text">$ Code $</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A8%81%E5%B0%94%E9%80%8A%E5%AE%9A%E7%90%86"><span class="nav-number">10.</span> <span class="nav-text">威尔逊定理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%B9%E9%A9%AC%E5%AE%9A%E7%90%86"><span class="nav-number">11.</span> <span class="nav-text">费马定理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%B9%E9%A9%AC%E5%B0%8F%E5%AE%9A%E7%90%86"><span class="nav-number">12.</span> <span class="nav-text">费马小定理</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="珂朵莉·诺塔·瑟尼欧里斯"
+      src="/images/740607.png">
+  <p class="site-author-name" itemprop="name">珂朵莉·诺塔·瑟尼欧里斯</p>
+  <div class="site-description" itemprop="description">热爱算法的蒟蒻</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">珂朵莉·诺塔·瑟尼欧里斯</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
